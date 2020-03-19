@@ -1,15 +1,16 @@
-Region, Date, NumberTests
-Alberta, 2020-03-05, 173
-Alberta, 2020-03-06, 375
-Alberta, 2020-03-07, NA
-Alberta, 2020-03-08, NA
-Alberta, 2020-03-09, 1452
-Alberta, 2020-03-10, 2004
-Alberta, 2020-03-11, 2600
-Alberta, 2020-03-12, 4265
-Alberta, 2020-03-13, 5429
-Alberta, 2020-03-14, 7069
-Alberta, 2020-03-15, 8831
-Alberta, 2020-03-16, 10524
-Alberta, 2020-03-17, 12258
-Alberta, 2020-03-18, 14447
+Region, Date, NumberTests, Confirmed, Deaths, Recovered
+Alberta, 2020-03-05, 173, 1, 0, 0
+Alberta, 2020-03-06, 375, 2, 0, 0
+Alberta, 2020-03-07, NA, 4, 0, 0
+Alberta, 2020-03-08, NA, 7, 0, 0
+Alberta, 2020-03-09, 1452, 7, 0, 0
+Alberta, 2020-03-10, 2004, 19, 0, 0
+Alberta, 2020-03-11, 2600, 19, 0, 0
+Alberta, 2020-03-12, 4265, 29, 0, 0
+Alberta, 2020-03-13, 5429, 29, 0, 0
+Alberta, 2020-03-14, 7069, 39, 0, 0
+Alberta, 2020-03-15, 8831, 56, 0, 0
+Alberta, 2020-03-16, 10524, 74, 0, 0
+Alberta, 2020-03-17, 12258, 97, 0, 0
+Alberta, 2020-03-18, 14447, 119, 0, 0
+Alberta, 2020-03-19, 16867, 146, 1, 0
