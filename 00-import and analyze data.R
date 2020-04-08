@@ -3,7 +3,25 @@ library(readxl)
 library(tibbletime)
 library(directlabels)
 
+##############################
+#specify your options here
+##############################
 
+
+#create list of countries to compare to
+countries_compare <- c("Korea, South",
+                       "Italy",
+                       "France",
+                       "Singapore",
+                       "Japan", "Spain", "Canada", "China", "US", "Taiwan*")
+
+#provincial data to include
+provinces_compare<-c("British Columbia", "Ontario")
+
+cases_cutoff<-10
+
+##############################
+##############################
 
 #import raw data
 confirmed <- read_csv(file="https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv")
@@ -42,7 +60,7 @@ recovered_long <- recovered %>%
 
 #merge data together
 merged_data <- left_join(confirmed_long, deaths_long, by=c("Country_Region", "Province_State", "record_date")) %>%
-               left_join(recovered_long, by=c("Country_Region", "Province_State", "record_date")) 
+    left_join(recovered_long, by=c("Country_Region", "Province_State", "record_date")) 
 
 #get a list of countries
 countries <- merged_data %>%
@@ -50,33 +68,24 @@ countries <- merged_data %>%
     group_by(Country_Region) %>%
     summarize(num_days = n())
 
-#create list of countries to compare to
-countries_compare <- c("Korea, South",
-                       "Italy",
-                       "France",
-                       "Singapore",
-                       "Japan", "Spain", "Canada", "China", "US", "Taiwan*")
-
-
 #geta accurate AB data from my feed
 Alberta_data <- AB_data %>%
     mutate(Country_Region = "Canada") %>%
     rename(Province_State = Region, record_date = Date, total_confirmed = Confirmed, total_dead = Deaths, total_recovered = Recovered) %>%
-    filter(total_confirmed >= 10) %>%
+    filter(total_confirmed >= cases_cutoff) %>%
     select(Country_Region, Province_State, record_date, total_confirmed, total_dead, total_recovered, NumberTests) %>%
     group_by(Country_Region) %>%
     mutate(day_count = row_number())
 
 #get BC data alone
 BC_data <- merged_data %>%
-    filter(Country_Region == "Canada" & Province_State == "British Columbia" & total_confirmed>=10) %>%
-    group_by(Country_Region, record_date) %>%
-    group_by(Country_Region) %>%
+    filter(Country_Region == "Canada" & Province_State %in% provinces_compare & total_confirmed>=cases_cutoff) %>%
+    group_by(Country_Region, Province_State) %>%
     mutate(day_count = row_number())
 
 #get comparison countries
 country_comparisons_data <- merged_data %>%
-    filter(Country_Region %in% countries_compare & total_confirmed>=10) %>%
+    filter(Country_Region %in% countries_compare & total_confirmed>=cases_cutoff) %>%
     mutate(NumberTests = NA) %>%
     group_by(Country_Region, record_date) %>%
     summarize_at(c("total_confirmed", "total_dead", "total_recovered", "NumberTests"), sum, na.rm= TRUE) %>%
@@ -90,7 +99,7 @@ reporting_data <- rbind(Alberta_data, BC_data, country_comparisons_data) %>%
 
 #graph it
 ggplot(reporting_data, aes(x=day_count, y = total_confirmed, group=reporting_region, color = reporting_region)) +
-         geom_line(size=1.5) +
-        scale_colour_discrete(guide='none') +
-         scale_y_continuous(trans='log10') +
-       geom_dl(aes(label = reporting_region), method = list(dl.combine( "last.points"), cex=0.8))
+    geom_line(size=1.5) +
+    scale_colour_discrete(guide='none') +
+    scale_y_continuous(trans='log10') +
+    geom_dl(aes(label = reporting_region), method = list(dl.combine( "last.points"), cex=0.8))
